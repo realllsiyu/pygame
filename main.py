@@ -8,14 +8,16 @@ def display_score():
     pygame.draw.rect(screen,'#c0e8ec',score_rect)
     pygame.draw.rect(screen,'#c0e8ec',score_rect,10)
     screen.blit(score_surf, score_rect)
+    return current_time
 
 pygame.init()
 screen = pygame.display.set_mode((800,400))
-pygame.display.set_caption('Runner')
+pygame.display.set_caption('Pixel Runner')
 clock = pygame.time.Clock()
 title_font = pygame.font.Font('font/Pixeltype.ttf',50)
 game_active = True
 start_time = 0
+score = 0
 
 sky_surface = pygame.image.load('graphics/Sky.png').convert()
 ground_surface = pygame.image.load('graphics/ground.png').convert()
@@ -26,6 +28,19 @@ snail_rect = snail_surface.get_rect(bottomright = (600, 300))
 player_surface = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
 player_rect = player_surface.get_rect(midbottom = (80,300))
 player_gravity = 0
+
+#Intro screen
+player_stand = pygame.transform.scale.rotozoom(pygame.image.load('graphics/player/pleyer_stand.png').convert_alpha(),0,2)
+player_stand_rect = player_stand.get_rect(center = (400,200))
+
+game_name = title_font.render('Pixel Runner', False, (111,196,169))
+game_name_rect = game_name.get_recr(center = (400,80))
+
+game_message = title_font.render('Press space to start', False, (111,196,169))
+game_message_rect = game_message.get_rect(center = (400,350))
+
+score_message = title_font.render(f'Your score: {score}', False, (111,196,169))
+score_message_rect = score_message.get_rect(center = (400,330))
 
 while True:
     for event in pygame.event.get():
@@ -49,6 +64,7 @@ while True:
     if game_active:
         screen.blit(sky_surface,(0,0))
         screen.blit(ground_surface,(0,300))
+        score = display_score()
         
         snail_rect.x -= 4
         if snail_rect.right <= 0: snail_rect.left = 800
@@ -63,7 +79,12 @@ while True:
         if snail_rect.colliderect(player_rect):
             game_active = False
     else:
-        screen.fill('Black')
+        screen.fill((94,129,162))
+        screen.blit(player_stand,player_stand_rect)
+        screen.blit(game_name,game_name_rect)
+        screen.blit(game_message,game_message_rect)        
+        if score == 0:screen.blit(game_message,game_message_rect)
+        else:screen.blit(score_message,score_message_rect)
 
     pygame.display.update()
     clock.tick(60)
