@@ -1,4 +1,3 @@
-from time import clock_getres
 import pygame
 from sys import exit
 
@@ -6,9 +5,17 @@ pygame.init()
 screen = pygame.display.set_mode((800,400))
 pygame.display.set_caption('Alice in Borderland')
 clock = pygame.time.Clock()
+title_font = pygame.font.Font('font/Pixeltype.ttf',50)
 
-test_surface = pygame.Surface((100,200))
-test_surface.fill('Red')
+sky_surface = pygame.image.load('graphics/Sky.png').convert()
+ground_surface = pygame.image.load('graphics/ground.png').convert()
+text_surface = title_font.render('Alice in Borderland', False, 'Black')
+
+snail_surface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
+snail_rect = snail_surface.get_rect(bottomright = (600, 300))
+
+player_surface = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
+player_rect = player_surface.get_rect(midbottom = (80,300))
 
 while True:
     for event in pygame.event.get():
@@ -16,7 +23,14 @@ while True:
             pygame.quit()
             exit()
     
-    screen.blit(test_surface,(0,0))
+    screen.blit(sky_surface,(0,0))
+    screen.blit(ground_surface,(0,300))
+    screen.blit(text_surface, (300,50))
+
+    snail_rect.x -= 4
+    if snail_rect.right <= 0: snail_rect.left = 800
+    screen.blit(snail_surface,snail_rect)
+    screen.blit(player_surface, player_rect)
 
     pygame.display.update()
     clock.tick(60)
